@@ -1,0 +1,42 @@
+# Copyright Broadcom, Inc. All Rights Reserved.
+# SPDX-License-Identifier: APACHE-2.0
+
+services:
+  mariadb:
+    image: docker.io/bitnami/mariadb:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=bn_moodle
+      - MARIADB_DATABASE=bitnami_moodle
+      - MARIADB_CHARACTER_SET=utf8mb4
+      - MARIADB_COLLATE=utf8mb4_unicode_ci
+    volumes:
+      - './mariadb_data:/bitnami/mariadb'
+  moodle:
+    image: docker.io/bitnami/moodle:5.1
+    ports:
+      - '80:8080'
+      - '443:8443'
+    environment:
+      - MOODLE_SITE_NAME=مدكر
+      - MOODLE_LANG=ar
+      - MOODLE_USERNAME=wabualela
+      - MOODLE_PASSWORD=
+      - MOODLE_EMAIL=wabualela@example.com
+      - MOODLE_DATABASE_HOST=mariadb
+      - MOODLE_DATABASE_PORT_NUMBER=3306
+      - MOODLE_DATABASE_USER=bn_moodle
+      - MOODLE_DATABASE_NAME=bitnami_moodle
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MOODLE_SMTP_HOST=mailhog
+      - MOODLE_SMTP_PORT=1025
+    volumes:
+      - './moodle_data:/bitnami/moodle'
+      - './moodledata_data:/bitnami/moodledata'
+    depends_on:
+      - mariadb
+  mailhog:
+    image: docker.io/bitnami/mailhog:latest
+    ports:
+      - '8025:8025'
+      - '1025:1025'
